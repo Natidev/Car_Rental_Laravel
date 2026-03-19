@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('name',100);
+            $table->string('proposed_office', 150)->nullable();
+            $table->enum('status', ['pending', 'active', 'inactive', 'closed'])->default('pending');
+            $table->softDeletes();
+            $table->index('status');
         });
     }
 
