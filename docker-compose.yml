@@ -1,0 +1,15 @@
+services:  
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_DB: car_rental
+    ports:
+      - "5409:5432"
+    volumes:
+        - postgres:/var/lib/postgresql/data/
+      
+volumes:
+  postgres:
+    driver: local
