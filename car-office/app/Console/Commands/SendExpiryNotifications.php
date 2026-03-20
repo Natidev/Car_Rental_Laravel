@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\AgreementStatus;
-use App\Models\OfficeRentAgreement;
-use Carbon\Carbon;
+use App\Services\AgreementExpiryNotificationService;
+use App\Services\ExpiringAgreementsFinder;
 use Illuminate\Console\Command;
 
 class SendExpiryNotifications extends Command
@@ -32,13 +31,13 @@ class SendExpiryNotifications extends Command
     {
         $days = (int) $this->option('days');
         $dryRun = $this->option('dry-run');
+        $notificationService = app(AgreementExpiryNotificationService::class);
+        $finder = app(ExpiringAgreementsFinder::class);
 
         $this->info("Checking for agreements expiring within {$days} days...");
 
         // Get agreements expiring within the specified days
-        $expiringAgreements = OfficeRentAgreement::expiringSoon($days)
-            ->with(['branch'])
-            ->get();
+        $expiringAgreements = $finder->getExpiringSoonAgreements($days);
 
         if ($expiringAgreements->isEmpty()) {
             $this->info('No expiring agreements found.');
@@ -55,11 +54,13 @@ class SendExpiryNotifications extends Command
             $this->line("  Remaining Days: {$remainingDays}");
 
             if (!$dryRun) {
-                // TODO: Implement actual notification sending
-                // Example:
-                // Notification::route('mail', $user->email)
-                //     ->notify(new ContractExpiryNotification($agreement));
-                $this->line('  Notification sent.');
+                $sent = $notificationService->sendExpiryReminder($agreement);
+
+                if ($sent) {
+                    $this->line('  Notification sent.');
+                } else {
+                    $this->line('  Notification skipped (no approver found).');
+                }
             } {
                 $this->line('  [DRY RUN] Notification would be sent.');
             }
