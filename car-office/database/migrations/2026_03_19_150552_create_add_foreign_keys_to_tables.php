@@ -9,77 +9,99 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::table('office_rent_agreements', function (Blueprint $table) {
-            $table->foreignId('branch_id')
-                  ->constrained('branches')
-                  ->onDelete('cascade')
-                  ->change(); 
+           DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_branch_id_foreign');
+        DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_approved_by_foreign');
+        DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_office_rent_agreement_id_foreign');
+        DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_approved_by_foreign');
+        DB::statement('ALTER TABLE vehicles DROP CONSTRAINT IF EXISTS vehicles_branch_id_foreign');
+        DB::statement('ALTER TABLE vehicle_licenses DROP CONSTRAINT IF EXISTS vehicle_licenses_vehicle_id_foreign');
+        DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_vehicle_id_foreign');
+        DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_requested_by_foreign');
+        DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_service_request_id_foreign');
+        DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_id_foreign');
+        DB::statement('ALTER TABLE branch_utilities DROP CONSTRAINT IF EXISTS branch_utilities_branch_id_foreign');
+        DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_branch_utility_id_foreign');
+        DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_paid_by_foreign');
 
-            $table->foreignId('approved_by')
-                  ->nullable()
-                  ->constrained('users')
-                  ->nullOnDelete()
-                  ->change();
+        Schema::table('office_rent_agreements', function (Blueprint $table) {
+            $table->foreign('branch_id')
+                ->references('id')
+                ->on('branches')
+                ->cascadeOnDelete();
+
+            $table->foreign('approved_by')
+                ->references('id')
+                ->on('users')
+                ->nullOnDelete();
         });
 
         Schema::table('agreement_renewals', function (Blueprint $table) {
-            $table->foreignId('office_rent_agreement_id')
-                  ->constrained('office_rent_agreements')
-                  ->onDelete('cascade');
+            $table->foreign('office_rent_agreement_id')
+                ->references('id')
+                ->on('office_rent_agreements')
+                ->cascadeOnDelete();
 
-            $table->foreignId('approved_by')
-                  ->nullable()
-                  ->constrained('users')
-                  ->nullOnDelete();
+            $table->foreign('approved_by')
+                ->references('id')
+                ->on('users')
+                ->nullOnDelete();
         });
 
         Schema::table('vehicles', function (Blueprint $table) {
-            $table->foreignId('branch_id')
-                  ->constrained('branches')
-                  ->onDelete('restrict');
+            $table->foreign('branch_id')
+                ->references('id')
+                ->on('branches')
+                ->restrictOnDelete();
         });
 
         Schema::table('vehicle_licenses', function (Blueprint $table) {
-            $table->foreignId('vehicle_id')
-                  ->constrained('vehicles')
-                  ->onDelete('cascade');
+            $table->foreign('vehicle_id')
+                ->references('id')
+                ->on('vehicles')
+                ->cascadeOnDelete();
         });
 
         Schema::table('vehicle_service_requests', function (Blueprint $table) {
-            $table->foreignId('vehicle_id')
-                  ->constrained('vehicles')
-                  ->onDelete('cascade');
+            $table->foreign('vehicle_id')
+                ->references('id')
+                ->on('vehicles')
+                ->cascadeOnDelete();
 
-            $table->foreignId('requested_by')
-                  ->constrained('users')
-                  ->onDelete('restrict');
+            $table->foreign('requested_by')
+                ->references('id')
+                ->on('users')
+                ->restrictOnDelete();
         });
 
         Schema::table('vehicle_maintenance_records', function (Blueprint $table) {
-            $table->foreignId('vehicle_service_request_id')
-                  ->constrained('vehicle_service_requests')
-                  ->onDelete('cascade');
+            $table->foreign('vehicle_service_request_id')
+                ->references('id')
+                ->on('vehicle_service_requests')
+                ->cascadeOnDelete();
 
-            $table->foreignId('vehicle_id')
-                  ->constrained('vehicles')
-                  ->onDelete('cascade');
+            $table->foreign('vehicle_id')
+                ->references('id')
+                ->on('vehicles')
+                ->cascadeOnDelete();
         });
 
         Schema::table('branch_utilities', function (Blueprint $table) {
-            $table->foreignId('branch_id')
-                  ->constrained('branches')
-                  ->onDelete('cascade');
+            $table->foreign('branch_id')
+                ->references('id')
+                ->on('branches')
+                ->cascadeOnDelete();
         });
 
         Schema::table('utility_payments', function (Blueprint $table) {
-            $table->foreignId('branch_utility_id')
-                  ->constrained('branch_utilities')
-                  ->onDelete('cascade');
+            $table->foreign('branch_utility_id')
+                ->references('id')
+                ->on('branch_utilities')
+                ->cascadeOnDelete();
 
-            $table->foreignId('paid_by')
-                  ->nullable()
-                  ->constrained('users')
-                  ->nullOnDelete();
+            $table->foreign('paid_by')
+                ->references('id')
+                ->on('users')
+                ->nullOnDelete();
         });
     }
 
