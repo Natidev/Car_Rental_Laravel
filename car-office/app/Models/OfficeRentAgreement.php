@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AgreementStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,6 +43,25 @@ class OfficeRentAgreement extends Model
             'end_date' => 'date',
             'approved_at' => 'datetime',
         ];
+    }
+
+    public function getRemainingDurationAttribute(): ?int
+    {
+        if (!$this->end_date) {
+            return null;
+        }
+
+        return Carbon::now()->diffInDays(Carbon::parse($this->end_date), false);
+    }
+
+    public function scopeExpiringSoon($query, int $days = 90)
+    {
+        $futureDate = Carbon::now()->addDays($days);
+
+        return $query->whereNotNull('end_date')
+            ->where('end_date', '<=', $futureDate)
+            ->where('end_date', '>=', Carbon::now())
+            ->where('status', '!=', AgreementStatus::EXPIRED);
     }
 
     public function branch(): BelongsTo
