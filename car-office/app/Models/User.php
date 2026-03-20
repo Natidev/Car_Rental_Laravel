@@ -10,17 +10,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<UserFactory> */
+
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
@@ -30,8 +29,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -41,7 +38,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $panel->getId() === 'admin';
+    }
     public function approvedOfficeRentAgreements(): HasMany
     {
         return $this->hasMany(OfficeRentAgreement::class, 'approved_by');
