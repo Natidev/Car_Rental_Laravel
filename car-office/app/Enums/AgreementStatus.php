@@ -10,5 +10,6 @@ enum AgreementStatus: string
     case EXPIRED = 'expired';
     case TERMINATED = 'terminated';
     case PENDING_APPROVAL = 'pending_approval';
+    case REJECTED = 'rejected';
     case RENEWED = 'renewed';
 }
