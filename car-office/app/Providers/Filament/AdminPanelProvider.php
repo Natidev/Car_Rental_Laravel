@@ -16,8 +16,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Slate,
-                'gray' => Color::Gray
+                'primary' => Color::Sky,
+                'gray' => Color::Slate
             ])
             ->brandName('Car Office')
             ->authMiddleware([
