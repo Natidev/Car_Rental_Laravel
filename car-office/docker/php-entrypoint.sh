@@ -1,7 +1,15 @@
 #!/usr/bin/env sh
 set -eu
 
+# Render (and most PaaS) only stream stdout/stderr to the log UI — not storage/logs/laravel.log.
+export LOG_CHANNEL="${LOG_CHANNEL:-stderr}"
+
 echo "[entrypoint] Starting container bootstrap..."
+
+if [ -z "${APP_KEY:-}" ]; then
+	echo "[entrypoint] ERROR: APP_KEY is not set. Add it in Render Environment (run: php artisan key:generate --show locally, paste the base64:... value)." >&2
+	exit 1
+fi
 
 # Ensure DB schema exists before session/cache drivers that use the database (SESSION_DRIVER=database, etc.).
 if php artisan migrate --force; then

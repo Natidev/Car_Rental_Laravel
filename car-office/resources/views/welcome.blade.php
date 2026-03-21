@@ -91,11 +91,10 @@
                                 <a href="{{ url('/admin/login') }}" class="px-5 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                                     Sign In
                                 </a>
-                                @if (Route::has('register'))
-                                    <a href="{{ url('/admin') }}" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 transition-all duration-300">
-                                        Get Started
-                                    </a>
-                                @endif
+                                {{-- Filament admin typically has no web "register" route; avoid Route::has() edge cases in production. --}}
+                                <a href="{{ url('/admin') }}" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105 transition-all duration-300">
+                                    Get Started
+                                </a>
                             @endauth
                         </nav>
                     </div>
