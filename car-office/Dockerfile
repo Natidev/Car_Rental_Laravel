@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 WORKDIR /var/www
 
@@ -7,6 +7,7 @@ RUN set -eux; \
     apk add --no-cache \
     bash \
     curl \
+    curl-dev \
     icu-dev \
     libpq \
     libzip-dev \
@@ -18,7 +19,7 @@ RUN set -eux; \
     sleep 5; \
     done
 
-RUN docker-php-ext-install pdo pdo_pgsql bcmath intl zip
+RUN docker-php-ext-install pdo pdo_pgsql bcmath intl zip mbstring curl
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
