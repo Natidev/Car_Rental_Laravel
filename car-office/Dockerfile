@@ -38,7 +38,7 @@ COPY ${APP_ROOT}/ .
 RUN rm -f bootstrap/cache/*.php
 
 RUN chmod +x docker/php-entrypoint.sh \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && chown -R www-data:www-data storage bootstrap/cache public
 
 USER www-data
 
