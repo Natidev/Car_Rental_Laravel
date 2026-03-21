@@ -3,12 +3,15 @@
 namespace App\Filament\Resources\VehicleServiceRequests;
 
 use App\Enums\ServiceType;
+use App\Enums\UserRole;
 use App\Enums\UrgencyLevel;
 use App\Filament\Resources\VehicleServiceRequests\Pages\CreateVehicleServiceRequest;
 use App\Filament\Resources\VehicleServiceRequests\Pages\EditVehicleServiceRequest;
 use App\Filament\Resources\VehicleServiceRequests\Pages\ListVehicleServiceRequests;
+use App\Models\User;
 use App\Models\VehicleServiceRequest;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -19,6 +22,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class VehicleServiceRequestResource extends Resource
 {
@@ -35,6 +40,8 @@ class VehicleServiceRequestResource extends Resource
             Select::make('requested_by')
                 ->label('Requested by')
                 ->relationship('requestedBy', 'name')
+                ->default(fn () => auth()->id())
+                ->hidden(fn () => auth()->user() instanceof User && auth()->user()->role === UserRole::STAFF)
                 ->required(),
             Textarea::make('problem_description')
                 ->required(),
@@ -54,6 +61,7 @@ class VehicleServiceRequestResource extends Resource
                     'completed' => 'completed',
                 ])
                 ->default('pending')
+                ->hidden(fn () => auth()->user() instanceof User && auth()->user()->role === UserRole::STAFF)
                 ->required(),
         ]);
     }
@@ -91,13 +99,71 @@ class VehicleServiceRequestResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([
-                EditAction::make(),
+                Action::make('approve')
+                    ->label('Approve')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (VehicleServiceRequest $record) => static::isAdmin() && $record->status?->value === 'pending')
+                    ->action(fn (VehicleServiceRequest $record) => $record->update(['status' => 'approved'])),
+                Action::make('deny')
+                    ->label('Deny')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn (VehicleServiceRequest $record) => static::isAdmin() && $record->status?->value === 'pending')
+                    ->action(fn (VehicleServiceRequest $record) => $record->update(['status' => 'rejected'])),
+                EditAction::make()
+                    ->visible(fn () => static::isAdmin()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => static::isAdmin()),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (! static::isAdmin() && auth()->id()) {
+            $query->where('requested_by', auth()->id());
+        }
+
+        return $query;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check();
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user() instanceof User;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::isAdmin();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return static::isAdmin();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return static::isAdmin();
+    }
+
+    private static function isAdmin(): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && $user->role === UserRole::ADMIN;
     }
 
     public static function getPages(): array

@@ -16,7 +16,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Slate,
+                'gray' => Color::Gray
             ])
             ->brandName('Car Office')
             ->authMiddleware([
@@ -30,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
                 \Illuminate\Routing\Middleware\SubstituteBindings::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages');
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets');
     }
 }

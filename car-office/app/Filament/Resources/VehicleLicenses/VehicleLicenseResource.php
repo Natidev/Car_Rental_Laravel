@@ -7,6 +7,7 @@ use App\Filament\Resources\VehicleLicenses\Pages\EditVehicleLicense;
 use App\Filament\Resources\VehicleLicenses\Pages\ListVehicleLicenses;
 use App\Models\VehicleLicense;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -51,9 +52,27 @@ class VehicleLicenseResource extends Resource
                 TextColumn::make('bolo_expiry_date')
                     ->date()
                     ->sortable(),
+                TextColumn::make('days_to_bolo_expiry')
+                    ->label('Days to License Expiry')
+                    ->state(function (VehicleLicense $record): string {
+                        if (! $record->bolo_expiry_date) {
+                            return 'N/A';
+                        }
+
+                        return (string) now()->diffInDays(Carbon::parse($record->bolo_expiry_date), false);
+                    }),
                 TextColumn::make('inspection_expiry_date')
                     ->date()
                     ->sortable(),
+                TextColumn::make('days_to_registration_renewal')
+                    ->label('Days to Registration Renewal')
+                    ->state(function (VehicleLicense $record): string {
+                        if (! $record->inspection_expiry_date) {
+                            return 'N/A';
+                        }
+
+                        return (string) now()->diffInDays(Carbon::parse($record->inspection_expiry_date), false);
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
