@@ -3,6 +3,8 @@ services:
     build:
       context: ./car-office
       dockerfile: Dockerfile
+      args:
+        APP_ROOT: .
     ports:
       - "8000:8000"
     volumes:
