@@ -1,4 +1,21 @@
-services:  
+services:
+  app:
+    build:
+      context: ./car-office
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./car-office:/var/www/html
+    depends_on:
+      - postgres
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=car_rental
+      - DB_USERNAME=pguser
+      - DB_PASSWORD=pgpassword
   postgres:
     image: postgres
     environment:

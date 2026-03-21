@@ -42,6 +42,11 @@ return [
             'journal_mode' => null,
             'synchronous' => null,
             'transaction_mode' => 'DEFERRED',
+            // When DB_URL is a Postgres URL, the driver is resolved from the URL; PgBouncer poolers
+            // (e.g. Neon *-pooler hosts) need emulated prepares for multi-statement migrations.
+            'options' => extension_loaded('pdo') ? [
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ] : [],
         ],
 
         'mysql' => [
@@ -97,6 +102,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'options' => extension_loaded('pdo') ? [
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ] : [],
         ],
 
         'sqlsrv' => [
