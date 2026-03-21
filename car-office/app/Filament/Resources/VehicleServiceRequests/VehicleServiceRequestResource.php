@@ -11,6 +11,7 @@ use App\Filament\Resources\VehicleServiceRequests\Pages\ListVehicleServiceReques
 use App\Models\User;
 use App\Models\VehicleServiceRequest;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -24,10 +25,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleServiceRequestResource extends Resource
 {
     protected static ?string $model = VehicleServiceRequest::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Vehicles';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -40,8 +44,8 @@ class VehicleServiceRequestResource extends Resource
             Select::make('requested_by')
                 ->label('Requested by')
                 ->relationship('requestedBy', 'name')
-                ->default(fn () => auth()->id())
-                ->hidden(fn () => auth()->user() instanceof User && auth()->user()->role === UserRole::STAFF)
+                ->default(fn () => Auth::id())
+                ->hidden(fn () => Auth::user() instanceof User && Auth::user()->role === UserRole::STAFF)
                 ->required(),
             Textarea::make('problem_description')
                 ->required(),
@@ -61,7 +65,7 @@ class VehicleServiceRequestResource extends Resource
                     'completed' => 'completed',
                 ])
                 ->default('pending')
-                ->hidden(fn () => auth()->user() instanceof User && auth()->user()->role === UserRole::STAFF)
+                ->hidden(fn () => Auth::user() instanceof User && Auth::user()->role === UserRole::STAFF)
                 ->required(),
         ]);
     }
@@ -126,8 +130,8 @@ class VehicleServiceRequestResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (! static::isAdmin() && auth()->id()) {
-            $query->where('requested_by', auth()->id());
+        if (! static::isAdmin() && Auth::id()) {
+            $query->where('requested_by', Auth::id());
         }
 
         return $query;
@@ -135,12 +139,12 @@ class VehicleServiceRequestResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->check();
+        return Auth::check();
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user() instanceof User;
+        return Auth::user() instanceof User;
     }
 
     public static function canEdit(Model $record): bool
@@ -160,7 +164,7 @@ class VehicleServiceRequestResource extends Resource
 
     private static function isAdmin(): bool
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         return $user instanceof User
             && $user->role === UserRole::ADMIN;

@@ -7,6 +7,7 @@ use App\Filament\Resources\VehicleMaintenanceRecords\Pages\EditVehicleMaintenanc
 use App\Filament\Resources\VehicleMaintenanceRecords\Pages\ListVehicleMaintenanceRecords;
 use App\Models\VehicleMaintenanceRecord;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -22,6 +23,8 @@ use Filament\Tables\Table;
 class VehicleMaintenanceRecordResource extends Resource
 {
     protected static ?string $model = VehicleMaintenanceRecord::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Vehicles';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

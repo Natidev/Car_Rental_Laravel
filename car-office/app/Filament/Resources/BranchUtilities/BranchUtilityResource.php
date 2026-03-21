@@ -7,6 +7,7 @@ use App\Filament\Resources\BranchUtilities\Pages\EditBranchUtility;
 use App\Filament\Resources\BranchUtilities\Pages\ListBranchUtilities;
 use App\Models\BranchUtility;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,6 +22,8 @@ use Filament\Tables\Table;
 class BranchUtilityResource extends Resource
 {
     protected static ?string $model = BranchUtility::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Utilities';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

@@ -7,6 +7,7 @@ use App\Filament\Resources\AgreementRenewals\Pages\EditAgreementRenewal;
 use App\Filament\Resources\AgreementRenewals\Pages\ListAgreementRenewals;
 use App\Models\AgreementRenewal;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,6 +24,8 @@ use Filament\Tables\Columns\TextColumn;
 class AgreementRenewalResource extends Resource
 {
     protected static ?string $model = AgreementRenewal::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Agreements';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

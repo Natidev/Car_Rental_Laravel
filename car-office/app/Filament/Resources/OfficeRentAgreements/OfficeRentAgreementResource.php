@@ -8,6 +8,7 @@ use App\Filament\Resources\OfficeRentAgreements\Pages\EditOfficeRentAgreement;
 use App\Filament\Resources\OfficeRentAgreements\Pages\ListOfficeRentAgreements;
 use App\Models\OfficeRentAgreement;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -24,6 +25,8 @@ use Filament\Tables\Columns\TextColumn;
 class OfficeRentAgreementResource extends Resource
 {
     protected static ?string $model = OfficeRentAgreement::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Agreements';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

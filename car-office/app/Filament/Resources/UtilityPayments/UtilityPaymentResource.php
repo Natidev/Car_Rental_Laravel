@@ -7,6 +7,7 @@ use App\Filament\Resources\UtilityPayments\Pages\EditUtilityPayment;
 use App\Filament\Resources\UtilityPayments\Pages\ListUtilityPayments;
 use App\Models\UtilityPayment;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -22,6 +23,8 @@ use Filament\Tables\Table;
 class UtilityPaymentResource extends Resource
 {
     protected static ?string $model = UtilityPayment::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Utilities';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

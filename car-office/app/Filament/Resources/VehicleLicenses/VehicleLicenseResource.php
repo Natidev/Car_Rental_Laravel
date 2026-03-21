@@ -7,6 +7,7 @@ use App\Filament\Resources\VehicleLicenses\Pages\EditVehicleLicense;
 use App\Filament\Resources\VehicleLicenses\Pages\ListVehicleLicenses;
 use App\Models\VehicleLicense;
 use BackedEnum;
+use UnitEnum;
 use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +24,8 @@ use Filament\Tables\Table;
 class VehicleLicenseResource extends Resource
 {
     protected static ?string $model = VehicleLicense::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Vehicles';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
