@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www
 
@@ -11,7 +11,6 @@ RUN set -eux; \
     libpq \
     libzip-dev \
     oniguruma-dev \
-    postgresql-client \
     postgresql-dev \
     unzip \
     zip && break; \
@@ -28,7 +27,14 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY . .
 
+# Remove local/dev framework caches so production container boots with fresh metadata.
+RUN rm -f bootstrap/cache/*.php
+
+RUN chmod +x docker/php-entrypoint.sh \
+    && chown -R www-data:www-data storage bootstrap/cache
+
 USER www-data
 
-EXPOSE 8000
 EXPOSE 9000
+EXPOSE 8000
+ENTRYPOINT ["/var/www/docker/php-entrypoint.sh"]
