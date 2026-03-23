@@ -27,9 +27,8 @@ COPY . .
 # Remove local/dev framework caches so production container boots with fresh metadata.
 RUN rm -f bootstrap/cache/*.php
 
-RUN chmod +x docker/php-entrypoint.sh \
-    && chown -R www-data:www-data storage bootstrap/cache public database \
-    && chmod 664 database/database.sqlite
+RUN if [ -f docker/php-entrypoint.sh ]; then chmod +x docker/php-entrypoint.sh; fi \
+    && chown -R www-data:www-data storage bootstrap/cache public database
 
 USER www-data
 

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -9,21 +10,19 @@ return new class extends Migration
 
     public function up(): void
     {
-        if (DB::getDriverName() === 'pgsql') {
-            DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_branch_id_foreign');
-            DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_approved_by_foreign');
-            DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_office_rent_agreement_id_foreign');
-            DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_approved_by_foreign');
-            DB::statement('ALTER TABLE vehicles DROP CONSTRAINT IF EXISTS vehicles_branch_id_foreign');
-            DB::statement('ALTER TABLE vehicle_licenses DROP CONSTRAINT IF EXISTS vehicle_licenses_vehicle_id_foreign');
-            DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_vehicle_id_foreign');
-            DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_requested_by_foreign');
-            DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_service_request_id_foreign');
-            DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_id_foreign');
-            DB::statement('ALTER TABLE branch_utilities DROP CONSTRAINT IF EXISTS branch_utilities_branch_id_foreign');
-            DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_branch_utility_id_foreign');
-            DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_paid_by_foreign');
-        }
+        DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_branch_id_foreign');
+        DB::statement('ALTER TABLE office_rent_agreements DROP CONSTRAINT IF EXISTS office_rent_agreements_approved_by_foreign');
+        DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_office_rent_agreement_id_foreign');
+        DB::statement('ALTER TABLE agreement_renewals DROP CONSTRAINT IF EXISTS agreement_renewals_approved_by_foreign');
+        DB::statement('ALTER TABLE vehicles DROP CONSTRAINT IF EXISTS vehicles_branch_id_foreign');
+        DB::statement('ALTER TABLE vehicle_licenses DROP CONSTRAINT IF EXISTS vehicle_licenses_vehicle_id_foreign');
+        DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_vehicle_id_foreign');
+        DB::statement('ALTER TABLE vehicle_service_requests DROP CONSTRAINT IF EXISTS vehicle_service_requests_requested_by_foreign');
+        DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_service_request_id_foreign');
+        DB::statement('ALTER TABLE vehicle_maintenance_records DROP CONSTRAINT IF EXISTS vehicle_maintenance_records_vehicle_id_foreign');
+        DB::statement('ALTER TABLE branch_utilities DROP CONSTRAINT IF EXISTS branch_utilities_branch_id_foreign');
+        DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_branch_utility_id_foreign');
+        DB::statement('ALTER TABLE utility_payments DROP CONSTRAINT IF EXISTS utility_payments_paid_by_foreign');
 
         Schema::table('office_rent_agreements', function (Blueprint $table) {
             $table->foreign('branch_id')
