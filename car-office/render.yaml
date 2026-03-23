@@ -1,0 +1,27 @@
+# Render Blueprint
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: car-office
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: free
+    envVars:
+      - key: APP_KEY
+        value: base64:/luOlVw0nBIbeuQbeVtwys6QkE7gCAOz2oW4nN8SjjA=
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_gDZrIqA8zai0@ep-wispy-cherry-a11hf5cq-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: DB_URL
+        value: ${DATABASE_URL}
+      - key: APP_ENV
+        value: production
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
