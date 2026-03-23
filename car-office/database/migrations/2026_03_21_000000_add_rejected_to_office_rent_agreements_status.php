@@ -9,7 +9,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-                DB::statement("DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agreement_status') THEN END IF; END $$;");
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement("DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agreement_status') THEN END IF; END $$;");
+        }
     }
 
     public function down(): void
