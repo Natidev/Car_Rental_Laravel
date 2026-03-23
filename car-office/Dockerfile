@@ -28,6 +28,7 @@ COPY . .
 RUN rm -f bootstrap/cache/*.php
 
 RUN if [ -f docker/php-entrypoint.sh ]; then chmod +x docker/php-entrypoint.sh; fi \
+    && mkdir -p storage bootstrap/cache public database \
     && chown -R www-data:www-data storage bootstrap/cache public database
 
 USER www-data
